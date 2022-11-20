@@ -4,7 +4,7 @@ export function joinGame(name:string, peerId:string) {
   return new Promise((resolve, reject) => {
     if (!name || !peerId) reject("Invalid name or peerId");
 
-    base('Game').create([
+    base('Players').create([
       {
         fields: {
           "Name": name,
@@ -12,6 +12,32 @@ export function joinGame(name:string, peerId:string) {
         },
       }
     ], (err:Error, records:any) => {
+      if (err) { console.error(err); return reject(err); }
+      resolve(records[0]);
+    });
+  });
+}
+
+export function getGameSettings() {
+  return new Promise((resolve, reject) => {
+    base('Settings').select({
+      maxRecords: 1,
+      view: 'Grid view',
+      filterByFormula: `{Name} = "CodeDay22"`
+    }).firstPage(async (err:Error, records:any) => {
+      if (err) { console.error(err); return reject(err); }
+      resolve(records[0]);
+    });
+  });
+}
+
+export function getUser(peerId:string) {
+  return new Promise((resolve, reject) => {
+    base('Players').select({
+      maxRecords: 1,
+      view: 'Grid view',
+      filterByFormula: `{Peer ID} = "${peerId}"`
+    }).firstPage(async (err:Error, records:any) => {
       if (err) { console.error(err); return reject(err); }
       resolve(records[0]);
     });

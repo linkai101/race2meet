@@ -1,57 +1,43 @@
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import Head from "next/head";
-import Peer from "peerjs";
+import { useRouter } from "next/router";
 
-export default function Home() {
-	const [peer, setPeer] = useState<Peer>();
-	const [loading, setLoading] = useState<string>("Generating Peer ID ...");
-	const [stream, setStream] = useState<MediaStream>();
+import { joinGame } from "../lib/airtable";
 
-	const myVideo = useRef<HTMLVideoElement>(null);
+export default function HomePage() {
+  const router = useRouter()
 
-	useEffect(() => {
-		import("peerjs").then(async ({ default: Peer }) => {
-			const peer = await new Peer();
+  const [name, setName] = React.useState<string>("");
 
-			peer.on("open", function (id) {
-				console.log("My peer ID is: " + id);
-				setLoading("");
-			});
+  function onSubmit(e:React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    joinGame(name, "test");
+    router.push("/pregame");
+  }
 
-			let navigator = window.navigator as any;
+  return <>
+    <Head>
+      <title></title>
+    </Head>
 
-			var getUserMedia = navigator.mediaDevices.getUserMedia;
-
-			getUserMedia({ video: true }).then((stream: MediaStream) => {
-				setStream(stream);
-				if (myVideo.current) {
-					myVideo.current.srcObject = stream;
-				}
-			});
-			peer.on("call", function (call) {
-				console.log("Getting a call...");
-				getUserMedia({ video: true }).then((stream: MediaStream) => {
-					call.answer(stream);
-					call.on("stream", function (remoteStream) {
-						// Show stream in some video/canvas element.
-					});
-				});
-			});
-		});
-	}, []);
-
-	return (
-		<>
-			<Head>
-				<title>Code Day 22</title>
-				<meta name="description" content="by @linkai101 on github" />
-			</Head>
-
-			{loading && <p className="font-bold text-center text-3xl">{loading}</p>}
-
-			<div>
-				<video className="rounded-lg w-96" autoPlay ref={myVideo}></video>
-			</div>
-		</>
-	);
+    <div className="h-screen flex flex-col justify-center items-center gap-3">
+      <form
+        className="flex gap-2 max-w-full w-72"
+        onSubmit={onSubmit}
+      >
+        <input
+          className="px-2 py-1 w-full flex-1 text-sm border-2 border-gray-300 rounded-lg"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
+        />
+        <button
+          className="px-3 py-1 font-bold text-white rounded-lg bg-blue-500"
+          type="submit"
+        >
+          Join
+        </button>
+      </form>
+    </div>
+  </>;
 }
