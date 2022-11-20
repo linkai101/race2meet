@@ -1,32 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Head from "next/head";
-import Peer from "peerjs";
+import { useRouter } from "next/router";
 
-export default function Home() {
-	const [peer, setPeer] = useState<Peer>();
-	const [loading, setLoading] = useState<string>("Generating Peer ID ...");
+import { joinGame } from "../lib/airtable";
 
-	useEffect(() => {
-		import("peerjs").then(async ({ default: Peer }) => {
-			const peer = await new Peer();
+export default function HomePage() {
+  const router = useRouter()
 
-			peer.on("open", function (id) {
-				console.log("My peer ID is: " + id);
-				setLoading("");
-			});
-		});
-	}, []);
+  const [name, setName] = React.useState<string>("");
 
-	return (
-		<>
-			<Head>
-				<title>Code Day 22</title>
-				<meta name="description" content="by @linkai101 on github" />
-			</Head>
+  function onSubmit(e:React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    joinGame(name, "test");
+    router.push("/pregame");
+  }
 
-			{loading && <p className="font-bold text-center text-3xl">{loading}</p>}
+  return <>
+    <Head>
+      <title></title>
+    </Head>
 
-			{!loading && <div></div>}
-		</>
-	);
+    <div className="h-screen flex flex-col justify-center items-center gap-3">
+      <form
+        className="flex gap-2 max-w-full w-72"
+        onSubmit={onSubmit}
+      >
+        <input
+          className="px-2 py-1 w-full flex-1 text-sm border-2 border-gray-300 rounded-lg"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
+        />
+        <button
+          className="px-3 py-1 font-bold text-white rounded-lg bg-blue-500"
+          type="submit"
+        >
+          Join
+        </button>
+      </form>
+    </div>
+  </>;
 }
