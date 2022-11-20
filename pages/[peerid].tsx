@@ -1,38 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Peer from "peerjs";
-import { Stream } from "stream";
+import { useRouter } from "next/router";
 
 export default function testconnect() {
+	const router = useRouter();
+	const { peerid }: { peerid?: string } = router.query;
+
 	const [peer, setPeer] = useState<Peer>();
 	const [loading, setLoading] = useState<string>("Generating Peer ID ...");
 
+	const myVideo = useRef<HTMLVideoElement>(null);
+	const theirVideo = useRef<HTMLVideoElement>(null);
+
 	useEffect(() => {
-		import("peerjs").then(async ({ default: Peer }) => {
-			const peer = await new Peer();
+		if (peerid) {
+			import("peerjs").then(async ({ default: Peer }) => {
+				const peer = await new Peer();
 
-			peer.on("open", function (id) {
-				console.log("My peer ID is: " + id);
-				setLoading("");
+				peer.on("open", function (id) {
+					console.log("My peer ID is: " + id);
+					setLoading("");
+
+					let navigator = window.navigator as any;
+
+					var getUserMedia = navigator.mediaDevices.getUserMedia;
+					getUserMedia({ video: true, audio: false }).then(
+						(stream: MediaStream) => {
+							if (myVideo.current) {
+								myVideo.current.srcObject = stream;
+							}
+							let call = peer.call(peerid || "", stream);
+							call.on("stream", (remoteStream) => {
+								if (theirVideo.current) {
+									theirVideo.current.srcObject = remoteStream;
+								}
+								// Show stream in some video/canvas element.
+							});
+						}
+					);
+				});
 			});
+		}
+	}, [router, peerid]);
 
-			var getUserMedia =
-				navigator.getUserMedia ||
-				navigator.webkitGetUserMedia ||
-				navigator.mozGetUserMedia;
-			getUserMedia(
-				{ video: true, audio: true },
-				function (stream: MediaStream) {
-					var call = peer.call("another-peers-id", stream);
-					call.on("stream", function (remoteStream) {
-						// Show stream in some video/canvas element.
-					});
-				},
-				function (err: Error) {
-					console.log("Failed to get local stream", err);
-				}
-			);
-		});
-	}, []);
-
-	return <div>testconnect</div>;
+	return (
+		<div>
+			<video className="rounded-lg w-96" autoPlay ref={myVideo}></video>
+			<video className="rounded-lg w-96" autoPlay ref={theirVideo}></video>
+		</div>
+	);
 }
