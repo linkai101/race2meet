@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../styles/globals.css";
+import Peer from "peerjs";
 
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { AppProps } from "next/app";
 
 function MyApp({ Component, pageProps }: AppProps) {
+	const router = useRouter();
 	const [loading, setLoading] = useState<string>("Generating Peer ID ...");
 	const [stream, setStream] = useState<MediaStream>();
-  const [peerid, setPeerId] = useState<string>("");
+	const [peerid, setPeerId] = useState<string>("");
+	const [peer, setPeer] = useState<Peer>();
 
 	const myVideo = useRef<HTMLVideoElement>(null);
 	const theirVideo = useRef<HTMLVideoElement>(null);
@@ -17,26 +21,28 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 		import("peerjs").then(async ({ default: Peer }) => {
 			const peer = peerid ? await new Peer(peerid) : await new Peer();
+			setPeer(peer);
 
 			peer.on("open", function (id) {
 				console.log("My peer ID is: " + id);
 				setLoading("Awaiting Connection ...");
-        setPeerId(id);
+				setPeerId(id);
 				localStorage.setItem("peerid", id);
 			});
 
-			let navigator = window.navigator as any;
-
-			var getUserMedia = navigator.mediaDevices.getUserMedia;
-
-			getUserMedia({ video: true }).then((stream: MediaStream) => {
-				setStream(stream);
-				if (myVideo.current) {
-					myVideo.current.srcObject = stream;
-				}
-			});
 			peer.on("call", function (call) {
 				console.log("Getting a call...");
+				console.log(router.pathname);
+
+				let navigator = window.navigator as any;
+				var getUserMedia = navigator.mediaDevices.getUserMedia;
+
+				getUserMedia({ video: true }).then((stream: MediaStream) => {
+					setStream(stream);
+					if (myVideo.current) {
+						myVideo.current.srcObject = stream;
+					}
+				});
 				getUserMedia({ video: true }).then((stream: MediaStream) => {
 					call.answer(stream);
 					call.on("stream", function (remoteStream) {
@@ -55,7 +61,12 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<Component {...pageProps} myVideo={myVideo} theirVideo={theirVideo} peerid={peerid} />
+			<Component
+				{...pageProps}
+				myVideo={myVideo}
+				theirVideo={theirVideo}
+				peerid={peerid}
+			/>
 		</>
 	);
 }
