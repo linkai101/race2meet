@@ -2,17 +2,21 @@ import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { addPlayer } from "../lib/airtable";
+import { getPlayer, addPlayer } from "../lib/airtable";
 
 export default function HomePage({peerid}: {peerid: string}) {
   const router = useRouter()
 
   const [name, setName] = React.useState<string>("");
 
-  function onSubmit(e:React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     // check if peerid is already saved on airtable
-    addPlayer(name, peerid);
+    const current = await getPlayer(peerid);
+    console.log(current)
+    if (!current) {
+      addPlayer(name, peerid);
+    }
     router.push("/pregame");
   }
 

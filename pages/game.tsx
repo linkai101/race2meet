@@ -38,9 +38,7 @@ export default function Game({
 	useEffect(() => {
 		import("peerjs").then(async ({ default: Peer }) => {
 			let navigator = window.navigator as any;
-			var getUserMedia = navigator.mediaDevices.getUserMedia;
-
-			getUserMedia({ video: true }).then((stream: MediaStream) => {
+			navigator.mediaDevices.getUserMedia({ video: true }).then((stream: MediaStream) => {
 				if (myVideo.current) {
 					setStream(stream);
 					myVideo.current.srcObject = stream;
