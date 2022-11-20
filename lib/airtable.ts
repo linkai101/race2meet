@@ -66,7 +66,7 @@ export async function getUnpairedPlayers(peerId:string) {
     base('Round 1').select({
       maxRecords: 1,
       view: 'Grid view',
-      filterByFormula: `AND({Peer ID} != "${player.id}", {Pair} = BLANK())`
+      filterByFormula: `AND({Peer ID} != "${peerId}", {Pair} = BLANK())`
     }).firstPage(async (err:Error, records:any) => {
       if (err) { console.error(err); return reject(err); }
       resolve(records);
