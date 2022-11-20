@@ -49,7 +49,7 @@ export default function Game({
 	// 	}
 	// }
 
-	const call = (peerid: string) => {
+	const call = (peerid: string): boolean => {
 		console.log("Calling", peerid);
 		navigator.mediaDevices
 			.getUserMedia({ video: true, audio: false })
@@ -66,6 +66,7 @@ export default function Game({
 					return false;
 				}
 			});
+		return false;
 	};
 
 	useEffect(() => {
@@ -84,8 +85,19 @@ export default function Game({
 						joinGame(peerid).then(() => {
 							getUnpairedPlayers(peerid).then((players: any) => {
 								console.log("players", players);
-								call(players[0].fields.Peer[0]);
-								setOtherUser(players[0]);
+								players.filter(
+									(player: any) => player.fields.Peer[0] !== peerid
+								);
+								console.log(players);
+								if (players.length > 0) {
+									let success = !!call(players[0].fields.Peer[0]);
+									if (success) {
+										pairPlayers(peerid, players[0].fields.Peer[0]);
+									} else {
+										handleFailedPairing(peerid, players[0].fields.Peer[0]);
+									}
+									setOtherUser(players[0]);
+								}
 							});
 						});
 					});
@@ -105,6 +117,7 @@ export default function Game({
 					<p className="absolute bottom-0 bg-black p-1 text-xs text-white text-center font-bold">
 						{user?.fields.Name}
 					</p>
+					<button className="absolute bottom-1 right-1 bg-white w-8 h-8 rounded-full border-2 border-black"></button>
 				</div>
 			</div>
 		</div>
