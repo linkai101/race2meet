@@ -1,26 +1,32 @@
-import Head from 'next/head';
+import React, { useEffect, useState } from "react";
+import Head from "next/head";
+import Peer from "peerjs";
 
 export default function Home() {
-  return <>
-    <Head>
-      <title>next-tailwind-starter</title>
-      <meta name="description" content="by @linkai101 on github" />
-    </Head>
+	const [peer, setPeer] = useState<Peer>();
+	const [loading, setLoading] = useState<string>("Generating Peer ID ...");
 
-    <main>
-      <div className="container px-8 py-8">
-        <h1 className="text-3xl">next-tailwind-starter <span className="text-lg text-gray-400">v1</span></h1>
-        <p className="text-md">
-          by <a href="https://github.com/linkai101" className="font-bold text-blue-500 hover:underline" target="_blank">@linkai101</a>
-        </p>
+	useEffect(() => {
+		import("peerjs").then(async ({ default: Peer }) => {
+			const peer = await new Peer();
 
-        <p className="mt-4">
-          A starter Next.js project installed with TypeScript and Tailwind.
-        </p>
-      </div>
-    </main>
+			peer.on("open", function (id) {
+				console.log("My peer ID is: " + id);
+				setLoading("");
+			});
+		});
+	}, []);
 
-    <footer>
-    </footer>
-  </>;
+	return (
+		<>
+			<Head>
+				<title>Code Day 22</title>
+				<meta name="description" content="by @linkai101 on github" />
+			</Head>
+
+			{loading && <p className="font-bold text-center text-3xl">{loading}</p>}
+
+			{!loading && <div></div>}
+		</>
+	);
 }
