@@ -27,6 +27,8 @@ export default function Game({
 	*/
 	//const [stream, setStream] = useState<MediaStream>();
 	const canvas = useRef<HTMLCanvasElement>(null);
+	const [user, setUser] = useState<any>();
+	const [otherUser, setOtherUser] = useState<any>();
 
 	// function takepicture() {
 	// 	let width = 1920;
@@ -90,11 +92,15 @@ export default function Game({
 		<div className="bg-black">
 			<div className="container max-w-6xl h-screen">
 				<video ref={theirVideo} autoPlay className="h-full self-cover" />
-				<video
-					ref={myVideo}
-					autoPlay
-					className="fixed bottom-8 right-8 w-52 md:w-72 rounded-xl"
-				/>
+				<p className="absolute bottom-0 bg-black p-1 text-xs text-white text-center font-bold">
+					Linkai Wu
+				</p>
+				<div className="fixed bottom-8 right-8">
+					<video ref={myVideo} autoPlay className=" w-52 md:w-72 rounded-xl" />
+					<p className="absolute bottom-0 bg-black p-1 text-xs text-white text-center font-bold">
+						Tinu Vanapamula
+					</p>
+				</div>
 			</div>
 		</div>
 	);
