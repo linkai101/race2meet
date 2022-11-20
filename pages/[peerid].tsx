@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Peer from "peerjs";
 import { useRouter } from "next/router";
 
-export default function testconnect() {
+export default function Connect() {
 	const router = useRouter();
 	const { peerid }: { peerid?: string } = router.query;
 
