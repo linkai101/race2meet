@@ -79,11 +79,6 @@ export default function Game({
 							getUnpairedPlayers(peerid).then((players: any) => {
 								console.log("players", players);
 								call(players[0].fields.Peer[0]);
-								if (players.length > 0) {
-									pairPlayers(peerid, players[0].fields["Peer ID"][0]).then(
-										() => {}
-									);
-								}
 							});
 						});
 					});
