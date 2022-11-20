@@ -19,13 +19,19 @@ export default function Game({
 	const [stream, setStream] = useState<MediaStream>();
 
 	const call = (peerid: string) => {
+		console.log("Calling...");
 		if (stream) {
 			let call = peer.call(peerid, stream);
-			call.on("stream", (remoteStream: MediaStream) => {
-				if (theirVideo.current) {
-					theirVideo.current.srcObject = remoteStream;
-				}
-			});
+			if (call) {
+				call.on("stream", (remoteStream: MediaStream) => {
+					if (theirVideo.current) {
+						theirVideo.current.srcObject = remoteStream;
+					}
+					return true;
+				});
+			} else {
+				return false; // call failed
+			}
 		}
 	};
 
