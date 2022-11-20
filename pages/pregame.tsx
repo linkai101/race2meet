@@ -12,7 +12,8 @@ export default function PregamePage({ peerid }: { peerid: string }) {
   const [gameSettings, setGameSettings] = React.useState<any>(null);
 
   React.useEffect(() => {
-    getPlayer(peerid).then((player:any) => {
+    let peerid = localStorage.getItem("peerid");
+    peerid && getPlayer(peerid).then((player:any) => {
       console.log(peerid)
       if (!player) {
         return;
