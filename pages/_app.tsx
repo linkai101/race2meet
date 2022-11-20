@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 	useEffect(() => {
 		let peerid = localStorage.getItem("peerid");
-    setPeerId(peerid || "");
+		setPeerId(peerid || "");
 
 		import("peerjs").then(async ({ default: Peer }) => {
 			const peer = peerid ? await new Peer(peerid) : await new Peer();
@@ -66,7 +66,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 				{...pageProps}
 				myVideo={myVideo}
 				theirVideo={theirVideo}
-				peerid={peerid}
+				peerid={peerid || localStorage.getItem("peerid")}
 				peer={peer}
 			/>
 		</>
