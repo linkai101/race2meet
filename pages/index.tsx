@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { joinGame } from "../lib/airtable";
+import { addPlayer } from "../lib/airtable";
 
 export default function HomePage({peerid}: {peerid: string}) {
   const router = useRouter()
@@ -11,7 +11,7 @@ export default function HomePage({peerid}: {peerid: string}) {
 
   function onSubmit(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    joinGame(name, peerid);
+    addPlayer(name, peerid);
     router.push("/pregame");
   }
 

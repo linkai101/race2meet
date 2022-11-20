@@ -5,14 +5,14 @@ import { useRouter } from "next/router";
 
 import { getGameSettings, getPlayer } from "../lib/airtable";
 
-export default function PregamePage() {
+export default function PregamePage({ peerid }: { peerid: string }) {
   const router = useRouter()
 
   const [name, setName] = React.useState<any>(null);
   const [gameSettings, setGameSettings] = React.useState<any>(null);
 
   React.useEffect(() => {
-    getPlayer("test").then((player:any) => {
+    getPlayer(peerid).then((player:any) => {
       if (!player) {
         return;
       };
@@ -40,7 +40,7 @@ export default function PregamePage() {
           instructions:
         </h2>
         <p className="font-thin">
-          you will be randomly connected to another player in your vicinity through a video call. find them and snap a selfie. ASAP. there will be 3 rounds. have fun!
+          you will be randomly connected to another player in your vicinity through a video call. find them and snap a selfie. ASAP. have fun!
         </p>
         
         <button className="px-2 py-1 text-xs text-blue-500 font-bold border-2 border-blue-500 rounded-md mt-4" onClick={fetchGameSettings}>
