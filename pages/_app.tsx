@@ -66,7 +66,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 				{...pageProps}
 				myVideo={myVideo}
 				theirVideo={theirVideo}
-				peerid={peerid || localStorage.getItem("peerid")}
+				peerid={peerid}
 				peer={peer}
 			/>
 		</>
