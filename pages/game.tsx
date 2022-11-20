@@ -6,6 +6,7 @@ import {
 	getUnpairedPlayers,
 	pairPlayers,
 	handleFailedPairing,
+	getPlayer,
 } from "../lib/airtable";
 
 export default function Game({
@@ -77,10 +78,14 @@ export default function Game({
 						if (myVideo.current) {
 							myVideo.current.srcObject = stream;
 						}
+						getPlayer(peerid).then((player) => {
+							setUser(player);
+						});
 						joinGame(peerid).then(() => {
 							getUnpairedPlayers(peerid).then((players: any) => {
 								console.log("players", players);
 								call(players[0].fields.Peer[0]);
+								setOtherUser(players[0]);
 							});
 						});
 					});
@@ -93,12 +98,12 @@ export default function Game({
 			<div className="container max-w-6xl h-screen">
 				<video ref={theirVideo} autoPlay className="h-full self-cover" />
 				<p className="absolute bottom-0 bg-black p-1 text-xs text-white text-center font-bold">
-					Linkai Wu
+					{otherUser?.fields.Name}
 				</p>
 				<div className="fixed bottom-8 right-8">
 					<video ref={myVideo} autoPlay className=" w-52 md:w-72 rounded-xl" />
 					<p className="absolute bottom-0 bg-black p-1 text-xs text-white text-center font-bold">
-						Tinu Vanapamula
+						{user?.fields.Name}
 					</p>
 				</div>
 			</div>
