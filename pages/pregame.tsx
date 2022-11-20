@@ -13,6 +13,7 @@ export default function PregamePage({ peerid }: { peerid: string }) {
 
   React.useEffect(() => {
     getPlayer(peerid).then((player:any) => {
+      console.log(peerid)
       if (!player) {
         return;
       };
