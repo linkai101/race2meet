@@ -1,14 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import Peer from "peerjs";
 
+import { joinGame, getUnpairedPlayers, pairPlayers, handleFailedPairing } from "../lib/airtable";
+
 export default function Game({
 	myVideo,
 	theirVideo,
 	peer,
+	peerid
 }: {
 	myVideo: React.RefObject<HTMLVideoElement>;
 	theirVideo: React.RefObject<HTMLVideoElement>;
 	peer: Peer;
+	peerid: string;
 }) {
 	/*
 		1. join game (airtable.ts joinGame)
@@ -44,6 +48,24 @@ export default function Game({
 					myVideo.current.srcObject = stream;
 				}
 			});
+		});
+
+		joinGame(peerid).then(() => {
+			let interval = setInterval(() => {
+				getUnpairedPlayers(peerid).then((players:any) => {
+					if (players.length > 0) {
+						pairPlayers(peerid, players[0].fields["Peer ID"][0]).then(() => {
+							const success = true;
+							call(players[0].fields.peerid);
+							if (success) {
+								clearInterval(interval);
+							} else {
+								handleFailedPairing(players[0].fields["Peer ID"], peerid);
+							}
+						});
+					}
+				});
+			}, 1000);
 		});
 	}, []);
 
