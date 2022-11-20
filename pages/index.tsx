@@ -11,6 +11,7 @@ export default function HomePage({peerid}: {peerid: string}) {
 
   function onSubmit(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // check if peerid is already saved on airtable
     addPlayer(name, peerid);
     router.push("/pregame");
   }

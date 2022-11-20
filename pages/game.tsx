@@ -15,9 +15,11 @@ export default function Game({
 	*/
 
 	return (
-		<div>
-			<video ref={myVideo} autoPlay className="rounded-lg w-96"></video>
-			<video ref={theirVideo} autoPlay className="rounded-lg w-96"></video>
+		<div className="bg-black">
+			<div className="container max-w-6xl h-screen">
+				<video ref={theirVideo} autoPlay className="h-full self-cover"/>
+				<video ref={myVideo} autoPlay className="fixed bottom-8 right-8 w-52 md:w-72 rounded-xl"/>
+			</div>
 		</div>
 	);
 }
