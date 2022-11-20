@@ -4,7 +4,7 @@ export function joinGame(name:string, peerId:string) {
   return new Promise((resolve, reject) => {
     if (!name || !peerId) reject("Invalid name or peerId");
 
-    base('Players').create([
+    base('Round 1').create([
       {
         fields: {
           "Name": name,
@@ -33,7 +33,7 @@ export function getGameSettings() {
 
 export function getUser(peerId:string) {
   return new Promise((resolve, reject) => {
-    base('Players').select({
+    base('Round 1').select({
       maxRecords: 1,
       view: 'Grid view',
       filterByFormula: `{Peer ID} = "${peerId}"`
