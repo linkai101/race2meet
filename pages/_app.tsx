@@ -66,6 +66,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 				myVideo={myVideo}
 				theirVideo={theirVideo}
 				peerid={peerid}
+				peer={peer}
 			/>
 		</>
 	);
