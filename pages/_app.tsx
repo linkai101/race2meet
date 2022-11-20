@@ -7,6 +7,7 @@ import { AppProps } from "next/app";
 function MyApp({ Component, pageProps }: AppProps) {
 	const [loading, setLoading] = useState<string>("Generating Peer ID ...");
 	const [stream, setStream] = useState<MediaStream>();
+  const [peerid, setPeerId] = useState<string>("");
 
 	const myVideo = useRef<HTMLVideoElement>(null);
 	const theirVideo = useRef<HTMLVideoElement>(null);
@@ -20,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 			peer.on("open", function (id) {
 				console.log("My peer ID is: " + id);
 				setLoading("Awaiting Connection ...");
+        setPeerId(id);
 				localStorage.setItem("peerid", id);
 			});
 
@@ -53,7 +55,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<Component {...pageProps} myVideo={myVideo} theirVideo={theirVideo} />
+			<Component {...pageProps} myVideo={myVideo} theirVideo={theirVideo} peerid={peerid} />
 		</>
 	);
 }

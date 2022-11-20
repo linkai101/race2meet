@@ -4,14 +4,14 @@ import { useRouter } from "next/router";
 
 import { joinGame } from "../lib/airtable";
 
-export default function HomePage() {
+export default function HomePage({peerid}: {peerid: string}) {
   const router = useRouter()
 
   const [name, setName] = React.useState<string>("");
 
   function onSubmit(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    joinGame(name, "test");
+    joinGame(name, peerid);
     router.push("/pregame");
   }
 
